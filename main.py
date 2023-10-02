@@ -18,8 +18,8 @@ class Uno(TwoPlayerGame):
         self.deck = deck
         self.leftover = []
 
-    def get_card(self):
-        random_index= random(len(deck))
-        self.start_hand.append(random_index)
-        #NIE TAK WYWALI ERROR
-        self.start_deck.remove(random_index)
+    def get_cards(self):
+        for x in range(6):
+            self.start_hand.append(deck.pop(random.randrange(len(deck))))
+
+        
