@@ -2,52 +2,114 @@ import random
 
 from easyAI import TwoPlayerGame, Negamax, Human_Player, AI_Player
 
-deck = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        # "Block", "Block", "Block", "Block",
-        # "Reverse","Reverse","Reverse","Reverse",
-        # "+2", "+2", "+2", "+2",
+deck = ["0B", "1B", "2B", "3B", "4B", "5B", "6B", "7B", "8B", "9B",
+        "0R", "1R", "2R", "3R", "4R", "5R", "6R", "7R", "8R", "9R",
+        "0Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y",
+        "0G", "1G", "2G", "3G", "4G", "5G", "6G", "7G", "8G", "9G",
+        # "BG", "BB", "BY", "BR",
+        # "RG","RB","RY","RR",
+        # "+2B", "+2G", "+2Y", "+2R",
         # "+4", "+4", "+4", "+4"
         ]
 
+possible_cards = []
+left_over=[deck.pop(random.randrange(len(deck)))]
 class Uno(TwoPlayerGame):
     def __init__(self, players=None):
         self.players = players 
         self.current_player = 2 # player 1 start
-        self.player_hand = [deck.pop(random.randrange(len(deck))) for i in range(6)]
-        self.player_two_hand = [deck.pop(random.randrange(len(deck))) for i in range(6)]   # 6 cards for start in each player's hand
+        self.player_hand = [deck.pop(random.randrange(len(deck))) for i in range(6)]+["DOBIERZ"]
+        self.player_two_hand = [deck.pop(random.randrange(len(deck))) for i in range(6)] +["DOBIERZ"]  # 6 cards for start in each player's hand
         # self.opponent = Human_Player()  # Create an opponent player
         self.deck = deck
-        self.leftover = [deck.pop(random.randrange(len(deck)))]
 
     def get_card(self):
         self.player_hand.append(deck.pop(random.randrange(len(deck)))) 
     
-    # def get_two_or_four_cards(self,card):
-    #     if card == "+2" :
-    #         self.player_hand = [deck.pop(random.randrange(len(deck))) for i in range(2)]  # 6 card for start in each player hand  
-    #     elif card == "+4" :
-    #         self.player_hand = [deck.pop(random.randrange(len(deck))) for i in range(4)]  # 6 card for start in each player hand  
+    def get_two_or_four_cards(self,card,hand):
+        if card[1] == "2" :
+            for i in range(2):
+                hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand  
+        # elif card == "+4" :
+        #     for i in range(4):
+        #         hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand 
 
     def possible_moves(self):
+        possible_cards = []
         if self.current_player == 1:
-            return self.player_hand
+            for i in self.player_hand:
+                if i[0].isdigit(): #musi być ostatnia oki
+
+                    if i[1] == left_over[-1][1]:
+                        possible_cards.append(i)
+                    elif i[0] == left_over[-1][0]:
+                        possible_cards.append(i)
+
+                elif left_over[-1][0] == "+": #to zadziała ?? Jest taka szansa ale nie wiem czy to tak nie będzię wyglądać [1,2]
+                    if i[2] == left_over[-1][2] or i[1] == "4":
+                        possible_cards.append(i)
+                else:
+                    possible_cards.append("DOBIERZ")   
+            return possible_cards
         elif self.current_player == 2:
-            return self.player_two_hand
+            for i in self.player_two_hand:
+                if i[0].isdigit(): #musi być ostatnia oki
+
+                    if i[1] == left_over[-1][1]:
+                        possible_cards.append(i)
+                    elif i[0] == left_over[-1][0]:
+                        possible_cards.append(i)
+
+                elif left_over[-1][0] == "+": #to zadziała ?? Jest taka szansa ale nie wiem czy to tak nie będzię wyglądać [1,2]
+                    if i[2] == left_over[-1][2] or i[1] == "4":
+                        possible_cards.append(i)
+                else:
+                    possible_cards.append("DOBIERZ")   
+            return possible_cards
 
     def make_move(self, move):
         if self.current_player == 1:
-            self.player_hand.remove(move)  # remove bones.
-        elif self.current_player == 2:
-           self.player_two_hand.remove(move) 
+            if move[0].isdigit():
+                if left_over[-1][1] == move[1]:
+                    self.player_hand.remove(move) 
+                    left_over.append(move)
+            elif move[0] == "+":
+                if move[1] == "2":
+                    for i in range(2):
+                        self.player_hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand  
+                    self.player_hand.remove(move)
+                    left_over.append(move)
+                else:
+                    for i in range(4):
+                        self.player_hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand  
+                    self.player_hand.remove(move)
+                    left_over.append(move)
+            elif move == "DOBIERZ":
+                self.player_hand.append(deck.pop(random.randrange(len(deck)))) 
 
-        self.leftover.append(move)
+        elif self.current_player == 2:
+            if move[0].isdigit():
+                if left_over[-1][1] == move[1]:
+                    self.player_two_hand.remove(move) 
+                    left_over.append(move)
+            elif move[0] == "+":
+                if move[1] == "2":
+                    for i in range(2):
+                        self.player_two_hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand  
+                    self.player_two_hand.remove(move)
+                    left_over.append(move)
+                else:
+                    for i in range(4):
+                        self.player_two_hand.append(deck.pop(random.randrange(len(deck))) )  # 6 card for start in each player hand  
+                    self.player_two_hand.remove(move)
+                    left_over.append(move)
+            elif move == "DOBIERZ":
+                self.player_two_hand.append(deck.pop(random.randrange(len(deck)))) 
+
 
 
     def win(self):
-        return len(self.player_hand) <= 0 or len(self.player_two_hand) <= 0
+        return (len(self.player_hand) <= 1 and self.player_hand[0]=="DOBIERZ") or (len(self.player_two_hand) <= 1 and self.player_hand[0]=="DOBIERZ")
     
     def is_over(self):
         return self.win()
@@ -64,7 +126,7 @@ class Uno(TwoPlayerGame):
             print("Your hand:")
             for x in self.player_two_hand:
                 print(f"[{x}] ", end="")
-        print(f"\nTop card {self.leftover[-1]}")
+        print(f"\nTop card {left_over[-1]}")
 
 
 ai = Negamax(2) # The AI will think 10 moves in advance
