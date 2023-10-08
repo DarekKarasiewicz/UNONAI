@@ -3,13 +3,15 @@ import random
 from easyAI import TwoPlayerGame, Negamax, Human_Player, AI_Player
 
 """
-Zasady Gry:
+Game rules:
 
-1. Każdy gracz losuje 6 kart z decku.
-2. Na początku gry losowana jest z decku karta zaczynająca.
-3. Aby położyć kartę na stosik, musi ona zgadzać się kolorem albo cyfrą kary na górze stosiku lub kartą zaczynającą.
-4. Jeżeli nie mamy pasującej karty musimy dobrać kartę z decku.
-5. Wygrywa gracz, który jako pierwszy pozbędzie się wszystkich kart z ręki.
+1. Each player draws 6 cards from the deck.
+2. At the beginning of the game, a starting card is drawn from the deck.
+3. To place a card in the pile, it must match the suit or penalty number at the top of the pile or the starting card.
+4. If we do not have a matching card, we must draw a card from the deck.
+5. The first player to get rid of all the cards in their hand wins.
+
+Authors : Dariusz Karasiewicz Mikołaj Kusiński
 """
 
 deck = ["0B", "1B", "2B", "3B", "4B", "5B", "6B", "7B", "8B", "9B",
@@ -23,15 +25,15 @@ left_over = [deck.pop(random.randrange(len(deck)))]
 
 def player_move(self, move, player_hand):
     """Ruch gracza
-
-    Ta funkcja pobiera zagraną kartę oraz listę kart w ręce i na podstawie zagranej karty wykonuje ruch.
+    Function gets played card and list of cards in player hand. On that data analize what to do next.
+    # Ta funkcja pobiera zagraną kartę oraz listę kart w ręce i na podstawie zagranej karty wykonuje ruch.
 
     :param self:
-        Tu nie wiem?!
+        all needed data form class
     :param move: String
-        Zagrana karta.
+        Played card
     :param player_hand: String: list
-        Lista kart gracza.
+        List of card in player hand
     """
     if move[0].isdigit():
         if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]:
@@ -47,6 +49,15 @@ def player_move(self, move, player_hand):
 
 class Uno(TwoPlayerGame):
     def __init__(self, players=None):
+        """
+        Constructor of Uno class. initalize fields:
+            -current_playe: What player start game
+            -player_hand = First player list of card in hand
+            -player_two_hand = Second player list of card in hand
+            -deck = list of cards in game
+            -left_over = list of played cards
+
+        """
         self.players = players
         self.current_player = 2
         self.player_hand = [deck.pop(random.randrange(len(deck))) for i in range(6)] + ["DOBIERZ"]
@@ -55,13 +66,14 @@ class Uno(TwoPlayerGame):
         self.left_over = left_over
 
     def possible_moves(self):
-        """Pokaż wszystkie możliwe ruchy gracza.
+        """
+        All possible moves that player can do
 
-        Ta funkcja sprawdza po koleji karty w ręcę gracza, czy spełniają warukni aby móc je położyć na stosik.
+        Function check all cards in player hand if they can be playd add to list wchich return on the end.
 
         :return:
         String : list
-            Lista kart spełniających warunki aby można było je położyć na stosik.
+            List of cards that can be played
         """
         possible_cards = []
 
@@ -88,12 +100,13 @@ class Uno(TwoPlayerGame):
             return possible_cards
 
     def make_move(self, move):
-        """Zagraj kartę
+        """
+        Make move
 
-        Ta funkcja pobiera zagraną kartę przez gracza i przekazuje ją do player_move celem wykonania ruchu.
+        Function gets played card and do player_move
 
         :param move: String
-            Zagrana karta.
+            Played card.
         """
 
         if self.current_player == 1:
@@ -103,41 +116,47 @@ class Uno(TwoPlayerGame):
 
     def win(self):
         """Sprawdź czy gracz wygrał
+        Check if player win
 
-        Ta funkcja weryfikuje czy gracz spełnił warunki wygranej.
+        This function verifies whether the player has met the winning conditions.
 
         :return:
         Boolean
-            True: jeżeli gracz spełnił warunek wygranej.
-            False: jeżeli gracz nie spełnił warunku wygranej.
+            True: if player win .
+            False: if player don't win.
         """
         return len(self.player_hand) <= 1 or len(self.player_two_hand) <= 1
 
     def is_over(self):
-        """Zakończ grę
+        """
+        Games end
 
-        Jeżeli jeden z graczy spełnił warunek wygranej, zakończ grę.
+        If player win end game
 
         :return:
-        Tu nie wiem?!
+        Boolean
+            True: if player win
+            False: if don't
         """
         return self.win()
 
     def scoring(self):
-        """Oceń rych gracza.
+        """
+        Score player move
 
-        Ta funkcja ocenia ruch gracza, jeżeli ruch był ruchem zwycięskim nagrodź gracza.
+        Function to score player move, if move win game give score to player
 
         :return:
         int
-            Punkty po wykonaniu ruchu
+            Points after move
         """
         return 100 if self.win() else 0
 
     def show(self):
-        """Pokaż output
+        """
+        Show output
 
-        Ta funkja wypisuje informacje na temat ręki gracza oraz obecnej karty na górze stosiku.
+        Function to show needed information about game like player hand, top left over card.
         """
         if self.current_player == 1:
             current_player_hand = self.player_hand
