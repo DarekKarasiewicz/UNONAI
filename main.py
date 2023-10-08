@@ -68,9 +68,10 @@ class Uno(TwoPlayerGame):
     def make_move(self, move):          #Wykonywanie ruchu
         if self.current_player == 1:
             if move[0].isdigit(): #czy karta ma licze
-                if self.left_over[-1][1] == move[1]: # czy kolor się zgadza
+                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # czy
                     self.left_over.append(move)  # dodawanie do stosu kart odrzuconych
-                    self.player_hand.remove(move) #usuwanie z ręki
+                    self.player_hand.remove(move)  # usuwanie z ręki
+
             elif move[0] == "+":   #implementacja kart +2 i +4 powinna działać lecz w pierwszej kolejności podstawy są najważniejsze
                 if move[1] == "2":
                     for i in range(2):
@@ -86,7 +87,7 @@ class Uno(TwoPlayerGame):
                 self.player_hand.append(deck.pop(random.randrange(len(deck))))
         if self.current_player == 2:
             if move[0].isdigit(): #czy karta ma licze
-                if self.left_over[-1][1] == move[1]: # czy kolor się zgadza
+                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # czy kolor się zgadza
                     self.left_over.append(move)  # dodawanie do stosu kart odrzuconych
                     self.player_two_hand.remove(move) #usuwanie z ręki
             elif move[0] == "+":   #implementacja kart +2 i +4 powinna działać lecz w pierwszej kolejności podstawy są najważniejsze
