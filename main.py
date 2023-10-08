@@ -3,9 +3,10 @@ import random
 from easyAI import TwoPlayerGame, Negamax, Human_Player, AI_Player
 
 deck = ["0B", "1B", "2B", "3B", "4B", "5B", "6B", "7B", "8B", "9B",
-        "0R", "1R", "2R", "3R", "4R", "5R", "6R", "7R", "8R", "9R",
-        "0Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y",
-        "0G", "1G", "2G", "3G", "4G", "5G", "6G", "7G", "8G", "9G",
+        "0R", "1R", "2R", "3R", "4R"
+    # , "5R", "6R", "7R", "8R", "9R",
+    #     "0Y", "1Y", "2Y", "3Y", "4Y", "5Y", "6Y", "7Y", "8Y", "9Y",
+    #     "0G", "1G", "2G", "3G", "4G", "5G", "6G", "7G", "8G", "9G",
         ]
 
 left_over = [deck.pop(random.randrange(len(deck)))]
@@ -17,7 +18,11 @@ def player_move(self, move, player_hand):
             self.left_over.append(move)
             player_hand.remove(move)
     elif move == "DOBIERZ":
-        player_hand.append(deck.pop(random.randrange(len(deck))))
+        if len(self.deck) == 0:
+            self.deck = self.left_over
+            self.left_over = []
+            self.left_over = [self.deck.pop(-1)]
+        player_hand.append(self.deck.pop(random.randrange(len(self.deck))))
 
 
 class Uno(TwoPlayerGame):
@@ -30,6 +35,10 @@ class Uno(TwoPlayerGame):
         self.left_over = left_over
 
     def possible_moves(self):
+        """
+
+        :return:
+        """
         possible_cards = []
 
         if self.current_player == 1:
@@ -55,9 +64,11 @@ class Uno(TwoPlayerGame):
             return possible_cards
 
     def make_move(self, move):
-        # if self.deck:
-        #     self.deck = self.left_over
-        #     self.left_over = self.deck.pop(self.deck[-1])
+        """
+
+        :param move:
+        :return:
+        """
 
         if self.current_player == 1:
             player_move(self, move, self.player_hand)
