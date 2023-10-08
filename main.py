@@ -66,9 +66,15 @@ class Uno(TwoPlayerGame):
             return possible_cards
 
     def make_move(self, move):          #Wykonywanie ruchu
+
+        if self.deck:
+            self.deck = self.left_over
+            self.left_over = self.deck.pop(self.deck[-1])
+
+
         if self.current_player == 1:
             if move[0].isdigit(): #czy karta ma licze
-                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # czy
+                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # Sprawdza czy liczba jest ta sama lub kolor jest ten sam
                     self.left_over.append(move)  # dodawanie do stosu kart odrzuconych
                     self.player_hand.remove(move)  # usuwanie z ręki
 
@@ -87,7 +93,7 @@ class Uno(TwoPlayerGame):
                 self.player_hand.append(deck.pop(random.randrange(len(deck))))
         if self.current_player == 2:
             if move[0].isdigit(): #czy karta ma licze
-                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # czy kolor się zgadza
+                if self.left_over[-1][0] == move[0] or self.left_over[-1][1] == move[1]: # Sprawdza czy liczba jest ta sama lub kolor jest ten sam
                     self.left_over.append(move)  # dodawanie do stosu kart odrzuconych
                     self.player_two_hand.remove(move) #usuwanie z ręki
             elif move[0] == "+":   #implementacja kart +2 i +4 powinna działać lecz w pierwszej kolejności podstawy są najważniejsze
@@ -106,6 +112,10 @@ class Uno(TwoPlayerGame):
 
 
     def win(self):
+        """
+
+        :return:
+        """
         return (len(self.player_hand) <= 1 and self.player_hand[0]=="DOBIERZ") or (len(self.player_two_hand) <= 1 and self.player_two_hand[0]=="DOBIERZ")  # Jeśli na ręce pozostaje tylko opcja dobierania wygrywasz
     
     def is_over(self):
