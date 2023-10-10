@@ -25,7 +25,7 @@ left_over = [deck.pop(random.randrange(len(deck)))]
 
 def player_move(self, move, player_hand):
     """Ruch gracza
-    Function gets played card and list of cards in player hand. On that data analize what to do next.
+    Function gets played card and list of cards in player hand. On that data analyze what to do next.
     # Ta funkcja pobiera zagraną kartę oraz listę kart w ręce i na podstawie zagranej karty wykonuje ruch.
 
     :param self:
@@ -50,8 +50,8 @@ def player_move(self, move, player_hand):
 class Uno(TwoPlayerGame):
     def __init__(self, players=None):
         """
-        Constructor of Uno class. initalize fields:
-            -current_playe: What player start game
+        Constructor of Uno class. initialize fields:
+            -current_player: What player start game
             -player_hand = First player list of card in hand
             -player_two_hand = Second player list of card in hand
             -deck = list of cards in game
@@ -69,7 +69,7 @@ class Uno(TwoPlayerGame):
         """
         All possible moves that player can do
 
-        Function check all cards in player hand if they can be playd add to list wchich return on the end.
+        Function check all cards in player hand if they can be played add to list which return on the end.
 
         :return:
         String : list
